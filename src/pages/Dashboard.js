@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 const Dashboard = () => {
+  const api = process.env.REACT_APP_API
+
   const [recordings, setRecordings] = useState([]);
   const [stories, setStories] = useState([]);
   const [userStories, setUserStories] = useState([]);
@@ -37,7 +39,7 @@ const Dashboard = () => {
         
         // Lấy danh sách bản ghi âm của người dùng
         try {
-          const recordingsResponse = await fetch(`http://localhost:8000/user-recordings/${user.uid}`);
+          const recordingsResponse = await fetch(`${api}/user-recordings/${user.uid}`);
           if (recordingsResponse.ok) {
             const recordingsData = await recordingsResponse.json();
             setRecordings(recordingsData);
@@ -81,7 +83,7 @@ const Dashboard = () => {
         }
         
         // Trạng thái ghi âm của người dùng
-        const statusResponse = await fetch(`http://localhost:8000/recording-status/${user.uid}`);
+        const statusResponse = await fetch(`${api}/recording-status/${user.uid}`);
         if (statusResponse.ok) {
           const statusData = await statusResponse.json();
           console.log("Trạng thái ghi âm:", statusData);
@@ -106,7 +108,7 @@ const Dashboard = () => {
     }
     
     try {
-      const response = await fetch('http://localhost:8000/stories/', {
+      const response = await fetch(`${api}/stories/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -154,7 +156,7 @@ const Dashboard = () => {
       
       const storyId = recordingToDelete.story_id;
       
-      const response = await fetch(`http://localhost:8000/recordings/${recordingId}`, {
+      const response = await fetch(`${api}/recordings/${recordingId}`, {
         method: 'DELETE'
       });
       
@@ -189,7 +191,7 @@ const Dashboard = () => {
     if (!recording.processed) {
       alert('This recording may not be fully processed yet. If you cannot download it, please try again later.');
     }
-    window.open(`http://localhost:8000/story/${user.uid}/${recording.story_id}`, '_blank');
+    window.open(`${api}/story/${user.uid}/${recording.story_id}`, '_blank');
   };
 
   // Định dạng thời gian
@@ -212,7 +214,7 @@ const Dashboard = () => {
     }
     
     try {
-      const response = await fetch(`http://localhost:8000/stories/${storyId}`, {
+      const response = await fetch(`${api}/stories/${storyId}`, {
         method: 'DELETE'
       });
       
@@ -231,7 +233,7 @@ const Dashboard = () => {
       );
       
       // Refresh available stories
-      const storiesResponse = await fetch('http://localhost:8000/stories/');
+      const storiesResponse = await fetch(`${api}/stories/`);
       if (storiesResponse.ok) {
         const storiesData = await storiesResponse.json();
         setStories(storiesData);
@@ -244,7 +246,7 @@ const Dashboard = () => {
   // Function to refresh available stories
   const refreshAvailableStories = async () => {
     try {
-      const storiesResponse = await fetch('http://localhost:8000/stories/');
+      const storiesResponse = await fetch(`${api}/stories/`);
       if (storiesResponse.ok) {
         const storiesData = await storiesResponse.json();
         
